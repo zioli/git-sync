@@ -1,13 +1,21 @@
-echo "# git-sync" >> README.md
-git init
-git add README.md
-git commit -m "first commit"
-git branch -M main
-git remote add origin git@github.com:zioli/git-sync.git
-git push -u origin main
+# git-sync
+
+git-sync is a command that pull a git repository to a local directory.
+
+It can be used to source a container volume with the content of a git repo.
+
+## Usage
+
+```
+# build the container
+docker build -t git-sync:latest .
 
 
-…or push an existing repository from the command line
-git remote add origin git@github.com:zioli/git-sync.git
-git branch -M main
-git push -u origin main
+# run the git-sync container
+docker run -d -v dags_repository:/git -v logs_repository:/logs git-sync:latest
+
+
+docker run -d GIT_SYNC_REPO=https://github.com/GoogleCloudPlatform/kubernetes GIT_SYNC_DEST=/git -e GIT_SYNC_BRANCH=gh-pages -r HEAD GIT_SYNC_DEST=/git -v /git-data:/git git-sync
+# run a nginx container to serve sync'ed content
+docker run -d -p 8080:80 -v /git-data:/usr/share/nginx/html nginx 
+```
